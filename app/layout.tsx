@@ -21,7 +21,7 @@ const cormorant = Cormorant_Garamond({
 });
 
 export const metadata: Metadata = {
-  title: "Portfolio | This Is My",
+  title: "Portfolio | Hasna Tsaniya",
   description: "Portfolio website — desain kreatif dan visual storytelling.",
 };
 
