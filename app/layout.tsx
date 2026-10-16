@@ -21,8 +21,13 @@ const cormorant = Cormorant_Garamond({
 });
 
 export const metadata: Metadata = {
-  title: "Portfolio | Hasna Tsaniya",
-  description: "Portfolio website — desain kreatif dan visual storytelling.",
+  title: "Sany — Portfolio",
+  description: "Portfolio website Hasna Tsaniya — Front End Developer & Quality Assurance.",
+  icons: {
+    icon: "/icon.svg",
+    shortcut: "/icon.svg",
+    apple: "/icon.svg",
+  },
 };
 
 export default function RootLayout({

@@ -60,8 +60,9 @@ export default function HeroSection() {
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
-    // Langsung ready — tidak perlu delay
-    setReady(true);
+    // Tunda sampai setelah first paint selesai
+    const t = requestAnimationFrame(() => setReady(true));
+    return () => cancelAnimationFrame(t);
   }, []);
 
   useEffect(() => {
@@ -125,7 +126,10 @@ export default function HeroSection() {
         </div>
 
         {/* PORTFOLIO — typing per huruf */}
-        <h1 className="flex items-end gap-0.5 mb-6 overflow-visible py-5 min-w-[300px] justify-center">
+        <h1
+          className="flex items-end gap-0.5 mb-6 overflow-visible py-5 min-w-[300px] justify-center"
+          style={{ visibility: ready ? "visible" : "hidden" }}
+        >
           {CHARS.map((c, i) => {
             const visible = i < count;
             const isT = c.char === "T" && i === 3;
@@ -172,11 +176,7 @@ export default function HeroSection() {
             );
           })}
 
-          {count === 0 && showCursor && (
-            <span className="relative inline-block font-display text-[clamp(64px,13vw,140px)] leading-none text-gold animate-blink">
-              |
-            </span>
-          )}
+          {/* Cursor sebelum huruf pertama — tidak ditampilkan */}
         </h1>
 
         {/* Tahun */}
