@@ -32,7 +32,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="id" className={`${bebasNeue.variable} ${inter.variable} ${cormorant.variable}`}>
-      <body className="min-h-full font-sans text-brown bg-cream">{children}</body>
+      <body className="min-h-full font-sans text-brown bg-cream" suppressHydrationWarning>
+        {children}
+      </body>
     </html>
   );
 }

@@ -21,6 +21,11 @@ body {
   background-color: #f5f0e8;
 }
 
+/* Pastikan konten langsung visible sebelum JS hydrate */
+#home, #about, #projects, #contact {
+  opacity: 1;
+}
+
 ::-webkit-scrollbar { width: 6px; }
 ::-webkit-scrollbar-track { background: #f5f0e8; }
 ::-webkit-scrollbar-thumb { background: #f5c300; border-radius: 3px; }
@@ -65,5 +70,14 @@ body {
   to   { opacity: 1; transform: translateX(0); }
 }
 
-.opacity-0-init { opacity: 0; }
+/* opacity-0-init hanya berlaku kalau JS belum hydrate */
+.opacity-0-init {
+  opacity: 0;
+}
+
+/* Setelah JS aktif, animasi berjalan normal */
+.animate-fade-up,
+.animate-fade-in {
+  opacity: 1;
+}
 

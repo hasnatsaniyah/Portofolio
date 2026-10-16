@@ -60,9 +60,8 @@ export default function HeroSection() {
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
-    // Mulai setelah 600ms supaya halaman sempat render dulu
-    const startDelay = setTimeout(() => setReady(true), 400);
-    return () => clearTimeout(startDelay);
+    // Langsung ready — tidak perlu delay
+    setReady(true);
   }, []);
 
   useEffect(() => {
