@@ -107,8 +107,12 @@ export default function ContactSection() {
 
         {/* Label */}
         <div
-          className={`flex items-center gap-3 mb-6 opacity-0-init ${inView ? "animate-fade-up" : ""}`}
-          style={{ animationDelay: "0.05s" }}
+          className="flex items-center gap-3 mb-6 transition-all duration-700 ease-out"
+          style={{
+            opacity: inView ? 1 : 0,
+            transform: inView ? "translateY(0)" : "translateY(24px)",
+            transitionDelay: "0.05s",
+          }}
         >
           <span className="h-px w-10 bg-gold inline-block"/>
           <span className="text-xs tracking-[0.22em] font-medium text-muted uppercase font-sans">
@@ -118,8 +122,12 @@ export default function ContactSection() {
 
         {/* Headline besar */}
         <div
-          className={`mb-16 opacity-0-init ${inView ? "animate-fade-up" : ""}`}
-          style={{ animationDelay: "0.1s" }}
+          className="mb-16 transition-all duration-700 ease-out"
+          style={{
+            opacity: inView ? 1 : 0,
+            transform: inView ? "translateY(0)" : "translateY(24px)",
+            transitionDelay: "0.1s",
+          }}
         >
           <h2 className="font-display text-[clamp(56px,10vw,130px)] leading-none text-brown">
             LET&apos;S
@@ -139,8 +147,12 @@ export default function ContactSection() {
 
           {/* Kiri — deskripsi + copy email */}
           <div
-            className={`opacity-0-init ${inView ? "animate-fade-up" : ""}`}
-            style={{ animationDelay: "0.18s" }}
+            className="transition-all duration-700 ease-out"
+            style={{
+              opacity: inView ? 1 : 0,
+              transform: inView ? "translateY(0)" : "translateY(24px)",
+              transitionDelay: "0.18s",
+            }}
           >
             <p className="text-base leading-[1.9] text-taupe font-sans max-w-sm mb-10">
               Terbuka untuk peluang kolaborasi, project freelance, maupun
@@ -182,8 +194,12 @@ export default function ContactSection() {
 
           {/* Kanan — social links */}
           <div
-            className={`opacity-0-init ${inView ? "animate-fade-up" : ""}`}
-            style={{ animationDelay: "0.24s" }}
+            className="transition-all duration-700 ease-out"
+            style={{
+              opacity: inView ? 1 : 0,
+              transform: inView ? "translateY(0)" : "translateY(24px)",
+              transitionDelay: "0.24s",
+            }}
           >
             <p className="text-[9px] tracking-[0.22em] text-muted font-sans uppercase mb-5">
               Find me on
@@ -225,8 +241,12 @@ export default function ContactSection() {
 
       {/* ── Footer strip ── */}
       <div
-        className={`relative z-10 max-w-[1200px] mx-auto px-8 w-full mt-20 pt-8 border-t border-brown/10 flex items-center justify-between flex-wrap gap-4 opacity-0-init ${inView ? "animate-fade-up" : ""}`}
-        style={{ animationDelay: "0.35s" }}
+        className="relative z-10 max-w-[1200px] mx-auto px-8 w-full mt-20 pt-8 border-t border-brown/10 flex items-center justify-between flex-wrap gap-4 transition-all duration-700 ease-out"
+        style={{
+          opacity: inView ? 1 : 0,
+          transform: inView ? "translateY(0)" : "translateY(24px)",
+          transitionDelay: "0.35s",
+        }}
       >
         <p className="text-[10px] tracking-[0.18em] text-muted font-sans uppercase">
           © 2026 Hasna — All rights reserved

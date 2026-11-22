@@ -135,7 +135,6 @@ function TechCard({ tech, index }: { tech: Tech; index: number }) {
     <div
       ref={cardRef}
       className="relative flex flex-col justify-between w-[190px] shrink-0 bg-cream border border-brown/12 rounded-2xl p-5 cursor-default transition-all duration-300 hover:border-gold/50 hover:shadow-[0_4px_24px_0_rgba(245,195,0,0.10)]"
-      style={{ animationDelay: `${0.45 + index * 0.07}s` }}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={() => setHovered(false)}
     >
@@ -222,26 +221,51 @@ const STATS = [
   { target: 10, suffix: "+", label: "Tech Stack" },
 ];
 
-function CountUp({ target, suffix, inView }: { target: number; suffix: string; inView: boolean }) {
-  const [val, setVal] = useState(0);
+function CountUp({
+  target,
+  suffix,
+  trigger,
+}: {
+  target: number;
+  suffix: string;
+  trigger: boolean;
+}) {
+  const [val, setVal] = useState<number | string>(0);
 
   useEffect(() => {
-    if (!inView) return;
-    let start = 0;
-    const duration = 1200;
-    const step = 16;
-    const increment = target / (duration / step);
-    const timer = setInterval(() => {
-      start += increment;
-      if (start >= target) {
-        setVal(target);
-        clearInterval(timer);
+    if (!trigger) return;
+
+    let frameId: number;
+    const startTime = performance.now();
+    const duration = 1500;
+
+    const tick = (now: number) => {
+      const elapsed = now - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+
+      // Fase 1: Rolling scramble (angka berputar acak)
+      if (progress < 0.4) {
+        const rand = Math.floor(Math.random() * 9) + 1;
+        setVal(rand);
+        frameId = requestAnimationFrame(tick);
       } else {
-        setVal(Math.floor(start));
+        // Fase 2: Decelerasi mulus menuju target
+        const subProgress = (progress - 0.4) / 0.6;
+        const ease = 1 - Math.pow(1 - subProgress, 3);
+        const current = Math.round(ease * target);
+        setVal(current);
+
+        if (progress < 1) {
+          frameId = requestAnimationFrame(tick);
+        } else {
+          setVal(target);
+        }
       }
-    }, step);
-    return () => clearInterval(timer);
-  }, [inView, target]);
+    };
+
+    frameId = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(frameId);
+  }, [trigger, target]);
 
   return <>{val}{suffix}</>;
 }
@@ -266,6 +290,25 @@ function useInView(threshold = 0.2) {
 
 export default function AboutSection() {
   const { ref, inView } = useInView(0.15);
+
+  // ── Stats inView observer mandiri ──
+  const [statsInView, setStatsInView] = useState(false);
+  const statsRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const el = statsRef.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setStatsInView(true);
+        }
+      },
+      { threshold: 0.3 }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
 
   // ── Typing effect ──
   const [displayed, setDisplayed] = useState("");
@@ -334,8 +377,12 @@ export default function AboutSection() {
         <div>
           {/* Label section */}
           <div
-            className={`flex items-center gap-3 mb-5 opacity-0-init ${inView ? "animate-fade-up" : ""}`}
-            style={{ animationDelay: "0.1s" }}
+            className="flex items-center gap-3 mb-5 transition-all duration-700 ease-out"
+            style={{
+              opacity: inView ? 1 : 0,
+              transform: inView ? "translateY(0)" : "translateY(24px)",
+              transitionDelay: "0.1s",
+            }}
           >
             <span className="h-px w-10 bg-gold inline-block" />
             <span className="text-xs tracking-[0.22em] font-medium text-muted uppercase font-sans">
@@ -345,16 +392,24 @@ export default function AboutSection() {
 
           {/* Nama besar */}
           <h2
-            className={`font-display text-[clamp(60px,9vw,108px)] leading-none text-brown mb-1 opacity-0-init ${inView ? "animate-fade-up" : ""}`}
-            style={{ animationDelay: "0.2s" }}
+            className="font-display text-[clamp(60px,9vw,108px)] leading-none text-brown mb-1 transition-all duration-700 ease-out"
+            style={{
+              opacity: inView ? 1 : 0,
+              transform: inView ? "translateY(0)" : "translateY(24px)",
+              transitionDelay: "0.2s",
+            }}
           >
             HASNA TSANIYA HIDAYAT
           </h2>
 
           {/* Typing job title */}
           <div
-            className={`flex items-center mb-6 h-9 opacity-0-init ${inView ? "animate-fade-up" : ""}`}
-            style={{ animationDelay: "0.3s" }}
+            className="flex items-center mb-6 h-9 transition-all duration-700 ease-out"
+            style={{
+              opacity: inView ? 1 : 0,
+              transform: inView ? "translateY(0)" : "translateY(24px)",
+              transitionDelay: "0.3s",
+            }}
           >
             <span className="text-lg font-normal text-taupe font-sans">I&apos;m a&nbsp;</span>
             <span className="text-lg font-semibold text-gold font-sans">{displayed}</span>
@@ -363,16 +418,30 @@ export default function AboutSection() {
 
           {/* Garis pemisah */}
           <div
-            className={`relative h-px bg-brown/10 mb-6 overflow-hidden opacity-0-init ${inView ? "animate-fade-up" : ""}`}
-            style={{ animationDelay: "0.35s" }}
+            className="relative h-px bg-brown/10 mb-6 overflow-hidden transition-all duration-700 ease-out"
+            style={{
+              opacity: inView ? 1 : 0,
+              transform: inView ? "translateY(0)" : "translateY(24px)",
+              transitionDelay: "0.35s",
+            }}
           >
-            <span className={`absolute left-0 top-0 h-full bg-gold/60 opacity-0-init ${inView ? "animate-slide-right" : ""}`} style={{ animationDelay: "0.7s" }} />
+            <span
+              className="absolute left-0 top-0 h-full bg-gold/60 transition-all duration-1000 ease-out"
+              style={{
+                width: inView ? "100%" : "0%",
+                transitionDelay: "0.55s",
+              }}
+            />
           </div>
 
           {/* Deskripsi */}
           <p
-            className={`text-base leading-[1.85] text-taupe font-sans max-w-md mb-8 opacity-0-init ${inView ? "animate-fade-up" : ""}`}
-            style={{ animationDelay: "0.4s" }}
+            className="text-base leading-[1.85] text-taupe font-sans max-w-md mb-8 transition-all duration-700 ease-out"
+            style={{
+              opacity: inView ? 1 : 0,
+              transform: inView ? "translateY(0)" : "translateY(24px)",
+              transitionDelay: "0.4s",
+            }}
           >
             An Application Software Engineering student at 
             Telkom University who is passionate about web development 
@@ -383,12 +452,22 @@ export default function AboutSection() {
 
           {/* CTA Buttons */}
           <div
-            className={`flex gap-4 flex-wrap opacity-0-init ${inView ? "animate-fade-up" : ""}`}
-            style={{ animationDelay: "0.5s" }}
+            className="flex gap-4 flex-wrap transition-all duration-700 ease-out"
+            style={{
+              opacity: inView ? 1 : 0,
+              transform: inView ? "translateY(0)" : "translateY(24px)",
+              transitionDelay: "0.5s",
+            }}
           >
-            <button className="px-7 py-3 bg-brown text-cream text-sm font-medium font-sans rounded-full hover:bg-gold hover:text-brown transition-all duration-300 shadow-sm">
+            <a
+              href="/HasnaTsaniyaHidayat_CV.pdf"
+              download="HasnaTsaniyaHidayat_CV.pdf"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="px-7 py-3 bg-brown text-cream text-sm font-medium font-sans rounded-full hover:bg-gold hover:text-brown transition-all duration-300 shadow-sm inline-block text-center"
+            >
               Download CV
-            </button>
+            </a>
             <button className="px-7 py-3 border border-brown/40 text-brown text-sm font-medium font-sans rounded-full hover:border-gold hover:text-gold transition-all duration-300"
               onClick={() => document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" })}>
               Contact Me →
@@ -398,8 +477,12 @@ export default function AboutSection() {
 
         {/* ── Kanan: Tech Stack Cards ── */}
         <div
-          className={`opacity-0-init ${inView ? "animate-fade-up" : ""}`}
-          style={{ animationDelay: "0.35s" }}
+          className="transition-all duration-700 ease-out"
+          style={{
+            opacity: inView ? 1 : 0,
+            transform: inView ? "translateY(0)" : "translateY(24px)",
+            transitionDelay: "0.35s",
+          }}
         >
           {/* Section label */}
           <p className="text-xs font-medium tracking-[0.22em] text-muted uppercase font-sans mb-5">
@@ -421,11 +504,14 @@ export default function AboutSection() {
           </div>
 
           {/* Stats row */}
-          <div className="grid grid-cols-3 gap-4 mt-6 pt-6 border-t border-brown/10">
+          <div
+            ref={statsRef}
+            className="grid grid-cols-3 gap-4 mt-6 pt-6 border-t border-brown/10"
+          >
             {STATS.map(({ target, suffix, label }) => (
               <div key={label} className="text-center">
                 <p className="font-display text-[clamp(28px,4vw,40px)] leading-none text-brown mb-1">
-                  <CountUp target={target} suffix={suffix} inView={inView} />
+                  <CountUp target={target} suffix={suffix} trigger={statsInView} />
                 </p>
                 <p className="text-xs font-medium text-muted font-sans tracking-wide">{label}</p>
               </div>
