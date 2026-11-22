@@ -118,14 +118,16 @@ const TECH_STACK: Tech[] = [
 function TechCard({ tech, index }: { tech: Tech; index: number }) {
   const [hovered, setHovered] = useState(false);
   const cardRef = useRef<HTMLDivElement>(null);
-  const [popupPos, setPopupPos] = useState({ top: 0, left: 0 });
+  const [popupPos, setPopupPos] = useState({ top: 0, left: 0, showAbove: false });
 
   const handleMouseEnter = () => {
     if (cardRef.current) {
       const rect = cardRef.current.getBoundingClientRect();
+      const showAbove = rect.bottom + 240 > window.innerHeight;
       setPopupPos({
-        top: rect.bottom + window.scrollY + 10,
-        left: rect.left + window.scrollX + rect.width / 2,
+        top: showAbove ? rect.top - 10 : rect.bottom + 10,
+        left: Math.max(150, Math.min(window.innerWidth - 150, rect.left + rect.width / 2)),
+        showAbove,
       });
     }
     setHovered(true);
@@ -178,7 +180,7 @@ function TechCard({ tech, index }: { tech: Tech; index: number }) {
           style={{
             top: popupPos.top,
             left: popupPos.left,
-            transform: "translateX(-50%)",
+            transform: popupPos.showAbove ? "translate(-50%, -100%)" : "translateX(-50%)",
           }}
         >
           {/* Header */}
